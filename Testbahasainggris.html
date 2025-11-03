@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tes Dasar Kemampuan Bahasa Inggris (A1-C2)</title>
+    <style>
+        /* CSS untuk Styling Halaman Tes */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px 30px 40px 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+        }
+        h1 {
+            text-align: center;
+            color: #005a9c;
+            border-bottom: 3px solid #005a9c;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        p.subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin-top: -10px;
+            margin-bottom: 30px;
+        }
+        
+        /* Styling Pertanyaan */
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #dcdcdc;
+            border-radius: 10px;
+            background-color: #fdfdfd;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .question-header h3 {
+            margin: 0;
+            color: #004a80;
+            font-size: 1.15em;
+        }
+        .question-level {
+            display: inline-block;
+            background-color: #e0f7fa;
+            color: #00796b;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        /* Styling Khusus C1 & C2 (sesuai permintaan) */
+        .level-advanced {
+            background-color: #fff8e1;
+            border-color: #ffc107;
+        }
+        .level-advanced .question-level {
+            background-color: #ffb300;
+            color: #3e2723;
+        }
+
+        /* Styling Opsi Jawaban */
+        .options label {
+            display: block;
+            margin: 8px 0;
+            padding: 12px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .options label:hover {
+            background-color: #f1f3f4;
+        }
+        .options input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.1);
+        }
+
+        /* Styling Feedback (Benar/Salah) */
+        .feedback {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none; 
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .feedback.correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        .feedback.incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+        .rationale {
+            font-size: 0.9em;
+            font-style: italic;
+            font-weight: normal;
+            color: #546e7a;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        /* Tombol & Hasil */
+        button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.15em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+        
+        #results {
+            margin-top: 30px;
+            padding: 25px;
+            border: 2px solid #005a9c;
+            border-radius: 10px;
+            background-color: #e6f0f7;
+            text-align: center;
+            font-size: 1.2em;
+            display: none;
+        }
+        #results h2 {
+            margin-top: 0;
+            color: #004a80;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Tes Kemampuan Dasar Bahasa Inggris </h1>
+    <p class="subtitle">(berisi 25 Soal: A1-C2) - Penilaian akan dilakukan secara Real-Time, <br> Mohon pahami kembali soalnya sebelum menjawab, penjelasan untuk jawaban yg salah ada di akhir.. </p>
+
+    <form id="quizForm"></form>
+    
+    <button id="submitBtn" onclick="submitQuiz()">Selesai Tes & Lihat Hasil</button>
+
+    <div id="results"></div>
+
+</div>
+
+<script>
+    // --- DATABASE SOAL (JavaScript) ---
+    // Berisi 25 soal, opsi, jawaban, dan penjelasan (rationale)
+    const quizData = [
+        // Level A1 (Soal 1-6)
+        {
+            q: "Pilih kata kerja 'to be' yang tepat: \"I ___ a student.\"",
+            level: "A1",
+            options: ["am", "is", "are", "be"],
+            answer: "am",
+            rationale: "Kata kerja 'to be' untuk subjek 'I' adalah 'am'."
+        },
+        {
+            q: "Mana dari kata-kata berikut yang merupakan nama hewan?",
+            level: "A1",
+            options: ["Book", "Run", "Cat", "Red"],
+            answer: "Cat",
+            rationale: "'Cat' (kucing) adalah nama hewan. 'Book' (buku) adalah benda, 'Run' (lari) adalah kata kerja, dan 'Red' (merah) adalah warna."
+        },
+        {
+            q: "Lengkapi kalimat: \"They ___ (like) apples.\"",
+            level: "A1",
+            options: ["like", "likes", "liking", "to like"],
+            answer: "like",
+            rationale: "Dalam Simple Present Tense, subjek jamak (They, We, You) menggunakan kata kerja bentuk dasar tanpa '-s'."
+        },
+        {
+            q: "Pilih kata ganti kepemilikan yang benar: \"That is ___ (my/me) car.\"",
+            level: "A1",
+            options: ["my", "me", "I", "mine"],
+            answer: "my",
+            rationale: "'My' adalah 'possessive adjective' yang digunakan sebelum kata benda (car) untuk menunjukkan kepemilikan."
+        },
+        {
+            q: "Pilih preposisi yang tepat: \"The cat is ___ (di bawah) the table.\"",
+            options: ["in", "on", "under", "at"],
+            answer: "under",
+            rationale: "'Under' berarti 'di bawah'. 'On' berarti 'di atas', 'In' berarti 'di dalam'."
+        },
+        {
+            q: "Pilih jawaban yang tepat: \"___ old are you?\"",
+            level: "A1",
+            options: ["What", "When", "How", "Who"],
+            answer: "How",
+            rationale: "Frasa 'How old are you?' adalah cara standar untuk menanyakan usia seseorang."
+        },
+
+        // Level A2 (Soal 7-12)
+        {
+            q: "Pilih bentuk Simple Past Tense: \"Yesterday, I ___ (go) to the store.\"",
+            level: "A2",
+            options: ["go", "goed", "went", "gone"],
+            answer: "went",
+            rationale: "'Go' adalah kata kerja tidak beraturan. Bentuk Simple Past (V2) dari 'go' adalah 'went'."
+        },
+        {
+            q: "Pilih bentuk perbandingan (comparative): \"This book is ___ (interesting) than that one.\"",
+            level: "A2",
+            options: ["interesting", "interestinger", "more interesting", "most interesting"],
+            answer: "more interesting",
+            rationale: "Kata sifat panjang (3 suku kata atau lebih) menggunakan 'more' untuk membentuk perbandingan."
+        },
+        {
+            q: "Pilih kata yang tepat untuk rencana masa depan: \"I am ___ to visit my grandmother tomorrow.\"",
+            level: "A2",
+            options: ["go", "going", "will", "went"],
+            answer: "going",
+            rationale: "Struktur 'be going to' (I am going to...) digunakan untuk menyatakan rencana di masa depan."
+        },
+        {
+            q: "Bagaimana posisi adverb of frequency (always) yang benar?",
+            level: "A2",
+            options: ["He always is late.", "He is always late.", "Always he is late.", "He is late always."],
+            answer: "He is always late.",
+            rationale: "Kata keterangan frekuensi (always, sometimes, never) biasanya diletakkan *setelah* kata kerja 'to be' (is, am, are)."
+        },
+        {
+            q: "Pilih kata yang tepat untuk benda yang tidak dapat dihitung (uncountable): \"How ___ water do you drink?\"",
+            level: "A2",
+            options: ["many", "much", "any", "a lot"],
+            answer: "much",
+            rationale: "'Much' digunakan untuk kata benda yang tidak dapat dihitung (uncountable nouns) seperti 'water', 'money', 'time'."
+        },
+        {
+            q: "Bentuk lampau dari: \"We ___ (study) English last night.\"",
+            level: "A2",
+            options: ["study", "studys", "studied", "studying"],
+            answer: "studied",
+            rationale: "Untuk kata kerja beraturan yang berakhiran 'y' setelah huruf mati, ubah 'y' menjadi 'i' dan tambahkan '-ed'."
+        },
+
+        // Level B1 (Soal 13-18)
+        {
+            q: "Pilih tenses yang tepat untuk pengalaman: \"I ___ (never see) snow in my life.\"",
+            level: "B1",
+            options: ["never saw", "am never seeing", "have never seen", "did never see"],
+            answer: "have never seen",
+            rationale: "Present Perfect Tense (have + V3) digunakan untuk berbicara tentang pengalaman hidup tanpa menyebut waktu spesifik."
+        },
+        {
+            q: "Lengkapi Conditional Type 1 (Real condition): \"If it rains tomorrow, I ___ at home.\"",
+            level: "B1",
+            options: ["will stay", "would stay", "stayed", "am staying"],
+            answer: "will stay",
+            rationale: "Conditional Type 1 (If + Simple Present, ... will + V1) digunakan untuk situasi yang mungkin terjadi di masa depan."
+        },
+        {
+            q: "Kata kerja 'enjoy' diikuti oleh:",
+            level: "B1",
+            options: ["to read", "reading", "read", "for read"],
+            answer: "reading",
+            rationale: "Kata kerja tertentu seperti 'enjoy', 'finish', 'avoid', dan 'suggest' harus diikuti oleh Gerund (V-ing)."
+        },
+        {
+            q: "Pilih Relative Pronoun yang tepat: \"The woman ___ lives next door is a doctor.\"",
+            level: "B1",
+            options: ["which", "who", "whose", "what"],
+            answer: "who",
+            rationale: "'Who' adalah kata ganti relatif yang digunakan untuk merujuk pada orang (subjek)."
+        },
+        {
+            q: "Ubah ke kalimat pasif: \"Someone stole my bicycle yesterday.\"",
+            level: "B1",
+            options: ["My bicycle stole yesterday.", "My bicycle was stolen yesterday.", "My bicycle is stolen yesterday.", "My bicycle has been stolen yesterday."],
+            answer: "My bicycle was stolen yesterday.",
+            rationale: "Kalimat aktif dalam Simple Past. Bentuk pasifnya adalah 'was/were + V3'. Objek (My bicycle) menjadi subjek."
+        },
+        {
+            q: "Pilih Phrasal Verb yang berarti 'berhenti': \"He decided to ___ smoking.\"",
+            level: "B1",
+            options: ["give up", "give in", "give away", "give back"],
+            answer: "give up",
+            rationale: "'Give up' berarti berhenti melakukan kebiasaan."
+        },
+
+        // Level B2 (Soal 19-23)
+        {
+            q: "Ubah ke Reported Speech: \"She said, 'I am working now.'\"",
+            level: "B2",
+            options: ["She said she is working now.", "She said I was working then.", "She said she was working then.", "She said she was working now."],
+            answer: "She said she was working then.",
+            rationale: "Dalam Reported Speech, Present Continuous ('am working') berubah menjadi Past Continuous ('was working'), dan 'now' berubah menjadi 'then'."
+        },
+        {
+            q: "Lengkapi Conditional Type 2 (Unreal situation): \"If I ___ rich, I would travel the world.\"",
+            level: "B2",
+            options: ["am", "was", "were", "had been"],
+            answer: "were",
+            rationale: "Dalam Conditional Type 2, kita menggunakan 'were' (subjunctive mood) untuk semua subjek (I, he, she, it) untuk menyatakan situasi yang tidak nyata."
+        },
+        {
+            q: "Pilih tenses yang tepat: \"They ___ (wait) for the bus for 30 minutes, and it's still not here.\"",
+            level: "B2",
+            options: ["are waiting", "waited", "have been waiting", "had waited"],
+            answer: "have been waiting",
+            rationale: "Present Perfect Continuous (have/has been + V-ing) digunakan untuk menekankan durasi suatu aksi yang dimulai di masa lalu dan masih berlanjut."
+        },
+        {
+            q: "Pilih kata yang paling tepat: \"The movie was ___ (sangat) disappointing.\"",
+            level: "B2",
+            options: ["very", "absolutely", "highly", "deeply"],
+            answer: "deeply",
+            rationale: "'Deeply' adalah kolokasi (pasangan kata) yang kuat untuk 'disappointing'. 'Highly' sering untuk 'recommended', 'Absolutely' untuk 'amazing'."
+        },
+        {
+            q: "Bedakan 'used to' dan 'be used to': \"When I moved to London, it took me months to ___ driving on the left.\"",
+            level: "B2",
+            options: ["used to", "get used to", "used to drive", "be used to"],
+            answer: "get used to",
+            rationale: "'Get used to' (+ V-ing) berarti 'beradaptasi' atau 'membiasakan diri' dengan sesuatu yang baru."
+        },
+
+        // Level C1 (Soal 24)
+        {
+            q: "Pilih kalimat yang menggunakan Inversion dengan benar setelah ekspresi negatif:",
+            level: "C1",
+            options: [
+                "Seldom I have seen such a beautiful sight.",
+                "Seldom have I seen such a beautiful sight.",
+                "Seldom I saw such a beautiful sight.",
+                "I seldom have seen such a beautiful sight."
+            ],
+            answer: "Seldom have I seen such a beautiful sight.",
+            rationale: "Ketika kalimat dimulai dengan adverb negatif (Seldom, Never, Hardly), kita harus menggunakan inversi (Auxiliary Verb 'have' + Subject 'I' + V3 'seen')."
+        },
+
+        // Level C2 (Soal 25)
+        {
+            q: "Pilih frasa idiomatik yang paling tepat untuk menggambarkan sesuatu yang sangat mahal:",
+            level: "C2",
+            options: [
+                "It cost an arm and a leg.",
+                "It cost many monies.",
+                "It was a daylight robbery.",
+                "It broke the bank for me."
+            ],
+            answer: "It cost an arm and a leg.",
+            rationale: "'It cost an arm and a leg' adalah idiom umum (native-like) yang berarti 'sangat mahal'. ('It was daylight robbery' juga C1/C2, tetapi lebih fokus pada harga yang tidak adil, sedangkan 'cost an arm and a leg' fokus pada harganya yang tinggi)."
+        }
+    ];
+
+    // --- FUNGSI UTAMA JAVASCRIPT ---
+
+    // Fungsi untuk membuat dan menampilkan soal
+    function renderQuiz() {
+        const form = document.getElementById('quizForm');
+        let html = '';
+        quizData.forEach((item, index) => {
+            const qNum = index + 1;
+            // Tambahkan kelas CSS khusus jika levelnya C1 atau C2
+            const levelClass = (item.level === 'C1' || item.level === 'C2') ? 'level-advanced' : '';
+            
+            html += `<div class="question ${levelClass}" id="q-container-${qNum}">`;
+            html += `
+                <div class="question-header">
+                    <h3>${item.q}</h3>
+                    <span class="question-level">${item.level}</span>
+                </div>
+            `;
+            html += `<div class="options">`;
+            
+            item.options.forEach((option) => {
+                // Gunakan encodeURIComponent untuk memastikan nilai radio aman (jika mengandung karakter khusus)
+                const safeValue = encodeURIComponent(option);
+                html += `<label>`;
+                html += `<input type="radio" name="q${qNum}" value="${safeValue}" onclick="checkAnswer(${qNum})">`;
+                html += option;
+                html += `</label>`;
+            });
+
+            html += `</div>`;
+            // Div feedback untuk menampilkan Benar/Salah dan Penjelasan
+            html += `<div id="feedback-${qNum}" class="feedback"></div>`;
+            html += `</div>`;
+        });
+        form.innerHTML = html;
+    }
+
+    // Fungsi untuk memeriksa jawaban (Dipanggil setiap kali opsi dipilih)
+    function checkAnswer(qNum) {
+        const item = quizData[qNum - 1]; // qNum adalah 1-based, index adalah 0-based
+        const selectedRadio = document.querySelector(`input[name="q${qNum}"]:checked`);
+        const feedbackDiv = document.getElementById(`feedback-${qNum}`);
+        
+        if (!selectedRadio) return; 
+
+        // Decode value yang dipilih untuk dibandingkan dengan kunci jawaban
+        const selectedValue = decodeURIComponent(selectedRadio.value);
+
+        // Tampilkan feedback instan
+        feedbackDiv.style.display = 'block';
+        
+        if (selectedValue === item.answer) {
+            feedbackDiv.className = 'feedback correct';
+            feedbackDiv.innerHTML = `<strong>BENAR!</strong>`;
+        } else {
+            feedbackDiv.className = 'feedback incorrect';
+            feedbackDiv.innerHTML = `
+                <strong>SALAH.</strong> Jawaban yang benar adalah: <strong>${item.answer}</strong>.
+                <span class="rationale">Penjelasan: ${item.rationale}</span>
+            `;
+        }
+        
+        // Animasi fade-in
+        setTimeout(() => feedbackDiv.style.opacity = 1, 10); 
+        
+        // Nonaktifkan semua opsi di pertanyaan ini setelah memilih
+        document.querySelectorAll(`input[name="q${qNum}"]`).forEach(radio => radio.disabled = true);
+    }
+
+    // Fungsi untuk menghitung skor total (Dipanggil saat tombol Selesai ditekan)
+    function submitQuiz() {
+        let score = 0;
+        const totalQuestions = quizData.length;
+        
+        // Loop untuk memeriksa semua jawaban (termasuk yang belum dijawab)
+        for (let i = 1; i <= totalQuestions; i++) {
+            const item = quizData[i - 1];
+            const selectedRadio = document.querySelector(`input[name="q${i}"]:checked`);
+            const feedbackDiv = document.getElementById(`feedback-${i}`);
+
+            if (selectedRadio) {
+                // Jika sudah dijawab (sudah diperiksa oleh checkAnswer), hitung skor
+                const selectedValue = decodeURIComponent(selectedRadio.value);
+                if (selectedValue === item.answer) {
+                    score++;
+                }
+            } else {
+                // Jika belum dijawab, tandai sebagai salah dan tampilkan jawaban
+                feedbackDiv.style.display = 'block';
+                feedbackDiv.className = 'feedback incorrect';
+                feedbackDiv.innerHTML = `
+                    <strong>Belum dijawab.</strong> Jawaban yang benar adalah: <strong>${item.answer}</strong>.
+                    <span class="rationale">Penjelasan: ${item.rationale}</span>
+                `;
+                feedbackDiv.style.opacity = 1;
+                // Nonaktifkan opsi
+                document.querySelectorAll(`input[name="q${i}"]`).forEach(radio => radio.disabled = true);
+            }
+        }
+
+        const percentage = (score / totalQuestions) * 100;
+        
+        // Penentuan Level CEFR (Sederhana) berdasarkan skor
+        let level = '';
+        let levelColor = '#e53935'; // A1
+        if (score >= 24) { level = 'C2 (Proficiency)'; levelColor = '#673ab7'; } 
+        else if (score >= 22) { level = 'C1 (Advanced)'; levelColor = '#f57f17'; } 
+        else if (score >= 19) { level = 'B2 (Upper Intermediate)'; levelColor = '#43a047'; } 
+        else if (score >= 13) { level = 'B1 (Intermediate)'; levelColor = '#ffb300'; } 
+        else if (score >= 7) { level = 'A2 (Elementary)'; levelColor = '#f4511e'; } 
+        else { level = 'A1 (Beginner)'; }
+
+        // Tampilkan hasil akhir
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = `
+            <h2>Penilaian Selesai!</h2>
+            <p>Skor Total Benar: <strong>${score}</strong> dari ${totalQuestions}</p>
+            <p>Persentase: <strong>${percentage.toFixed(1)}%</strong></p>
+            <hr style="width: 60%; margin: 20px auto; border: 0; border-top: 1px solid #ccc;">
+            <p>Perkiraan Level CEFR Anda:</p>
+            <h3 style="color: ${levelColor}; margin-top: 5px;">${level}</h3>
+        `;
+        resultsDiv.style.display = 'block';
+
+        // Gulir ke hasil
+        resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        
+        // Nonaktifkan tombol submit
+        const submitButton = document.getElementById('submitBtn');
+        submitButton.innerHTML = "Tes Selesai";
+        submitButton.disabled = true;
+    }
+
+    // Jalankan fungsi renderQuiz() saat halaman selesai dimuat
+    window.onload = renderQuiz;
+</script>
+
+</body>
+</html>
